@@ -85,6 +85,12 @@ Everyone is welcome to help [contribute](CONTRIBUTING.md) and improve this proje
 * Writing or refactoring code
 * Fixing [issues](https://github.com/roots/roots/issues)
 
+### GULP
+**run**
+  gulp default task development
+  gulp --prod task production
+  Access http://localhost:3000
+
 ### Version BETA
 **I create this fullpage for study, sorry for any bugs, contribute with this repo. Thank's enjoy! **
 
