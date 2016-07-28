@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+
+# Logging
+*.log
+
+# Project meta
+*.sublime-workspace
+
+# Don't commit dependencies!
+node_modules
+
+# Generated files
