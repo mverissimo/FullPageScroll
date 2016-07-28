@@ -77,6 +77,10 @@ options: boolean (true / false)
 ```
 NOTE: Move to first section case current === last
 
+## Future features
+* Touch events
+* Callback's
+
 ## Contributing
 
 Everyone is welcome to help [contribute](CONTRIBUTING.md) and improve this project. There are several ways you can contribute:
