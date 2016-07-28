@@ -3,22 +3,22 @@ Create amazing fullpage
 
 ## Installation
 ###Step 1: Link required files
-
-```html
-<!-- bxSlider Javascript file -->
+html
+```
+<!-- fullPage Javascript file -->
 <script src="/js/fullPage.min.js"></script>
-<!-- bxSlider CSS file -->
-<link href="/lib/tuinslider.css" rel="stylesheet" />
+```
 
 ###Step 2: Create HTML markup
-
-```html
+html
+```
 <div id="main">
 	<section class="section"></section>
 	<section class="section"></section>
 	<section class="section"></section>
 	<section class="section"></section>
 </div>
+```
 
 ###Step 3: Call the SimpleFs
 
