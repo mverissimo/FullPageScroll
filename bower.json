@@ -1,0 +1,22 @@
+{
+  "name": "newblue",
+  "description": "boilerplate",
+  "main": "",
+  "authors": [
+    "Matheus Verissimo"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "_MACOSX"
+  ],
+  "dependencies": {
+    "susy": "~2.2.9"
+  }
+}

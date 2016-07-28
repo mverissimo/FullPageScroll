@@ -1,0 +1,73 @@
+#main {
+  height: 100%;
+  // transition: transform .8s ease;
+
+}
+
+// Default section
+.section {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  &:nth-child(1) {
+    background: $brand-primary;
+
+  }
+
+  &:nth-child(2) {
+    background: $brand-warning;
+
+  }
+
+  &:nth-child(3) {
+    background: $brand-info;
+
+  }
+
+  &:nth-child(4) {
+    background: $brand-success;
+
+  }
+
+}
+
+
+
+.slide-navigation {
+  position: fixed;
+  top: 50%;
+  bottom: 0;
+  right: 32px;
+
+  text-align: center;
+
+  & > li {
+    position: relative;
+    display: block;
+    margin-bottom: 12px;
+
+  }
+
+}
+
+.slide-navigation  a {
+  display: block;
+  height: 13px;
+  width: 13px;
+
+  border: 3px solid #FFF;
+  border-radius: 50%;
+  background: transparent;
+
+  z-index: 1;
+  transition: all 0.4s ease;
+
+  &.is-active { background: #FFF; }
+
+}
