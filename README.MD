@@ -80,6 +80,7 @@ NOTE: Move to first section case current === last
 ## Future features
 * Touch events
 * Callback's
+* Responsive fallback
 
 ## Contributing
 
