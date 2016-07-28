@@ -1,5 +1,5 @@
-# Simple boilerplate
-A simple boilerplate to create projects.
+# Simple Full Page Scroll 
+Create amazing fullpage
 
 ## Installation
 ###Step 1: Link required files
