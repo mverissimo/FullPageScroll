@@ -1,6 +1,6 @@
 # Simple Full Page Scroll 
 Create amazing fullpage:
-* **<a href="https://mverissimo.github.io/simpleFullPageScroll/", target="_blank">See live example.</a>**
+* **<a href="https://mverissimo.github.io/simpleFullPageScroll/" target="_blank">See live example.</a>**
 
 ## Installation
 ###Step 1: Link required files

@@ -1,0 +1,1 @@
+var fullpage = new SimpleFs("#main");
