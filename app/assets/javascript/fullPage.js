@@ -1,7 +1,16 @@
+/* ===========================================================
+ * Simple Full Page Scroll beta
+ * ===========================================================
+ * Copyright 2015 Matheus Verissimo.
+ * ma.theus_verissimo@hotmail.com
+ *
+ * Create awesome pages full scroll
+ *
+ * ========================================================== */
+
 /**
  *  SimpleFs() returns a new element
  *
- *  @author Matheus Verissimo - ma.theus_verissimo@hotmail.com
  *  @para {HTMLElement} element
  *  @param {object} options
  *  @type {object} SimpleFs
@@ -25,6 +34,9 @@ var SimpleFs = function(element, options) {
     // If section === last, move to first
     infinite: false,
 
+    onLeave: null,
+    afterMove: null,
+
   };
 
   var settings = Object.extend({}, defaults, options);
@@ -37,7 +49,6 @@ var SimpleFs = function(element, options) {
 
   var lastAnimation = 0;
   var lastPress = 0;
-  var period = 300;
 
   var paginationList = '';
 
@@ -63,11 +74,15 @@ var SimpleFs = function(element, options) {
   /**
    * section
    *
-   * @description using css transform to move current section
+   * @description using css transform to move section
    * @param {{Number}} index move to section
    */
   var move = function(index) {
-    var height = window.innerHeight;
+
+    if (typeof settings.onLeave === 'function') {
+      settings.onLeave(current);
+
+    }
 
     var webkit = '-webkit-transform: translate3d(0, ' + index * -100 + '%, 0); -webkit-transition: -webkit-transform ' + settings.animationDuration + 'ms ' + settings.animationTiming + ';';
     var ms = ' -ms-transform: translate3d(0, ' + index * -100 + '%, 0); -ms-transition: -ms-transform ' + settings.animationDuration + 'ms ' + settings.animationTiming + ';';
@@ -76,6 +91,15 @@ var SimpleFs = function(element, options) {
 
     el.style.cssText = normal + webkit + ms + moz;
 
+    el.addEventListener('transitionend', function() {
+
+      if (typeof settings.afterMove === 'function') {
+        settings.afterMove(current);
+
+      }
+      
+    });
+
     current = index;
 
     // addClass active
@@ -83,6 +107,9 @@ var SimpleFs = function(element, options) {
 
   };
 
+  var transitionEnd = function() {
+
+  };
 
   /**
    * scrollUp
@@ -128,7 +155,7 @@ var SimpleFs = function(element, options) {
     // http://stackoverflow.com/a/17514856
     var time = new Date().getTime();
 
-    if (time - lastAnimation < period + settings.animationDuration) {
+    if (time - lastAnimation < settings.animationDuration) {
       return;
 
     }
@@ -207,6 +234,16 @@ var SimpleFs = function(element, options) {
     move(parseInt(index));
 
   };
+  /**
+   * moveTo
+   *
+   * @description move slide to index pass on param in function
+   * @param  {{Number}} index slide index
+   */
+  SimpleFs.prototype.moveTo = function(index) {
+    move(index);
+
+  };
 
   /**
    * bindEvents
@@ -220,7 +257,7 @@ var SimpleFs = function(element, options) {
 
     }
 
-    // Reference line: 53
+    // Reference line: 50
     // add and remove class 'is-active'
     if (settings.pagination === true) {
       var paginationLinks = document.querySelectorAll('.slide-navigation li a');
@@ -229,6 +266,10 @@ var SimpleFs = function(element, options) {
         paginationLinks[i].addEventListener('click', paginationBind);
 
       }
+
+    }
+
+    if (typeof settings.afterMove === 'function') {
 
     }
 
@@ -277,12 +318,17 @@ Object.extend = function(orig) {
         if (getter || setter) {
           if (getter)
             orig.__defineGetter__(prop, getter);
+
           if (setter)
             orig.__defineSetter__(prop, setter);
+
         } else {
           orig[prop] = obj[prop];
+
         }
+
       }
+
     }
 
   }
