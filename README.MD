@@ -4,6 +4,7 @@ Create amazing fullpage:
 
 ## Installation
 ###Step 1: Link required files
+
 html
 ```
 <!-- fullPage Javascript file -->
@@ -11,6 +12,7 @@ html
 ```
 
 ###Step 2: Create HTML markup
+
 html
 ```
 <div id="main">
@@ -29,9 +31,7 @@ Call .SimpleFs() on `<div id="main">`.
 var fullpage = new SimpleFs("#main");
 ```
 
-##Configuration options
-
-###General
+##Options
 
 **section selector**
 ```
@@ -77,10 +77,44 @@ options: boolean (true / false)
 ```
 NOTE: Move to first section case current === last
 
+##Methods
+See <a href="">here</a>
+
+NOTE: Verify your instace before call method <a href="#step-3-call-the-simplefs">check it</a>
+
+**moveTo()**
+```
+fullpage.moveTo(index);
+```
+
+##Callbacks
+**onLeave**
+``` 
+default: null,
+option: onLeave: function(index) {},
+```
+
+**afterMove**
+``` 
+default: null,
+option: afterMove: function(index) {},
+```
+
+### Gulp commands
+
+* `gulp` —— Default for task development
+* `gulp --prod` —— Task production
+* Access http://localhost:3000
+
 ## Future features
+
 * Touch events
-* Callback's
 * Responsive fallback
+
+## Changelog
+
+* Added callbacks, onLeave() and afterMove()
+* Added moveTo method
 
 ## Contributing
 
@@ -91,14 +125,8 @@ Everyone is welcome to help [contribute](CONTRIBUTING.md) and improve this proje
 * Writing or refactoring code
 * Fixing [issues](https://github.com/roots/roots/issues)
 
-### GULP
-**run**
-
-* gulp default task development
-* gulp --prod task production
-* Access http://localhost:3000
-
 ### Version BETA
+
 **I create this fullpage for study, sorry for any bugs, contribute with this repo. Thank's enjoy! **
 
 ### License:
