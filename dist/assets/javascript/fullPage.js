@@ -230,15 +230,16 @@ FullPage.prototype.enableTouch = function(el) {
 
 };
 
-FullPage.prototype.mousewheel = function() {
+FullPage.prototype.mousewheel = function(event) {
   var time = new Date().getTime();
+  var delta = event.wheelDelta || -event.detail;
 
   if (time - Math.abs(this.lastAnimation) < this.settings.animationDuration) {
     return;
 
   }
 
-  if (event.deltaY > 0) {
+  if (delta < 0) {
     this.moveDown();
 
   } else {
@@ -288,4 +289,3 @@ FullPage.prototype.paginationHTML = function() {
   this.body.appendChild(pagination);
 
 };
-
