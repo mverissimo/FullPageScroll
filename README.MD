@@ -1,4 +1,4 @@
-# Simple Full Page Scroll 
+# Simple Full Page Scroll
 Create amazing fullpage:
 * **<a href="https://mverissimo.github.io/simpleFullPageScroll/" target="_blank">See live example.</a>**
 
@@ -23,12 +23,12 @@ html
 </div>
 ```
 
-###Step 3: Call the SimpleFs
+###Step 3: Call the FullPage
 
-Call .SimpleFs() on `<div id="main">`.
+Call .FullPage() on `<div id="main">`.
 
 ```javascript
-var fullpage = new SimpleFs("#main");
+var page = new FullPage("#main");
 ```
 
 ##Options
@@ -70,34 +70,39 @@ default: 'true',
 options: boolean (true / false)
 ```
 
-**infinite**
+**touch**
 ```
 default: 'true',
 options: boolean (true / false)
 ```
-NOTE: Move to first section case current === last
+
+**touchLimit**
+```
+default: 100,
+options: int
+```
 
 ##Methods
 See <a href="">here</a>
 
-NOTE: Verify your instace before call method <a href="#step-3-call-the-simplefs">check it</a>
+NOTE: Verify your instace before call method <a href="#step-3-call-the-FullPage">check it</a>
 
 **moveTo()**
 ```
-fullpage.moveTo(index);
+page.moveTo(index);
 ```
 
 ##Callbacks
 **onLeave**
-``` 
+```
 default: null,
 option: onLeave: function(index) {},
 ```
 
-**afterMove**
-``` 
+**afterLoad**
+```
 default: null,
-option: afterMove: function(index) {},
+option: afterLoad: function(index) {},
 ```
 
 ### Gulp commands
@@ -106,15 +111,15 @@ option: afterMove: function(index) {},
 * `gulp --prod` —— Task production
 * Access http://localhost:3000
 
-## Future features
-
-* Touch events
-* Responsive fallback
-
 ## Changelog
 
-* Added callbacks, onLeave() and afterMove()
+### 1.0
+* Added callbacks, onLeave() and afterLoad()
 * Added moveTo method
+
+### 1.1
+* Added prototype for every functions
+* Touch event
 
 ## Contributing
 
