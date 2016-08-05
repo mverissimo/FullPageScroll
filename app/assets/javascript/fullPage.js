@@ -8,331 +8,284 @@
  *
  * ========================================================== */
 
-/**
- *  SimpleFs() returns a new element
- *
- *  @para {HTMLElement} element
- *  @param {object} options
- *  @type {object} SimpleFs
- */
+var defaults = {
+  section: '.section',
 
-var SimpleFs = function(element, options) {
+  animationDuration: 700,
+  animationTiming: 'ease',
+  animationTranform: 'transform',
+
+  pagination: true,
+  keyboard: true,
+
+  touch: true,
+  touchLimit: 100,
+
+  loop: false,
+
+  onLeave: null,
+  afterLoad: null,
+
+};
+
+var utils = {
+  setVendor: function(el, property, value) {
+
+    if (!el) {
+      return;
+    }
+
+    el.style[property.charAt(0).toLowerCase() + property.slice(1)] = value;
+    el.style['webkit' + property] = value;
+    el.style['moz' + property] = value;
+    el.style['ms' + property] = value;
+    el.style['o' + property] = value;
+
+  },
+
+};
+
+var FullPage = function(element, options) {
   'use strict';
 
-  // TODO: Defaults can be configurable by an options param
-  var defaults = {
-    section: '.section',
+  // Element
+  this.el = document.querySelector(element);
 
-    animationDuration: 700,
-    animationTiming: 'ease',
-    animationTranform: 'transform',
+  // Settings
+  this.settings = Object.assign({}, defaults, options);
 
-    pagination: true,
-    keyboard: true,
+  // Body
+  this.body = document.querySelector('body');
 
-    // Infinite
-    // If section === last, move to first
-    infinite: false,
+  // Sections
+  this.sections = this.el.querySelectorAll(this.settings.section);
 
-    onLeave: null,
-    afterMove: null,
+  //init
+  this.init();
 
-  };
+  return this;
 
-  var settings = Object.extend({}, defaults, options);
-  var el = document.querySelector(element);
-  var sections = el.querySelectorAll(settings.section);
-  var total = sections.length;
-  var body = document.querySelector('body');
+};
 
-  var current = 0;
+FullPage.prototype.init = function() {
+  this.index = 0;
+  this.lastAnimation = 0;
 
-  var lastAnimation = 0;
-  var lastPress = 0;
+  this.build();
+  this.bindEvents();
+  this.makeActive(this.index);
 
-  var paginationList = '';
+};
 
-  /**
-   * setActive
-   *
-   * @description
-   */
-  var setActive = function(index) {
+FullPage.prototype.build = function() {
+  if (this.settings.pagination) {
+    this.paginationHTML();
+
+  }
+
+};
+
+FullPage.prototype.bindEvents = function() {
+  var self = this;
+
+  if (this.settings.pagination) {
     var paginationLinks = document.querySelectorAll('.slide-navigation li a');
 
-    for (var i = 0; i < total; i++) {
-      sections[i].classList.remove('is-active');
-      paginationLinks[i].classList.remove('is-active');
+    for (var i = 0; i < paginationLinks.length; i++) {
 
-    }
+      (function(index) {
 
-    sections[current].classList.add('is-active');
-    paginationLinks[current].classList.add('is-active');
+        paginationLinks[i].addEventListener('click', function(event) {
+          self.index = index;
+          self.move(self.index);
 
-  };
+          event.preventDefault();
 
-  /**
-   * section
-   *
-   * @description using css transform to move section
-   * @param {{Number}} index move to section
-   */
-  var move = function(index) {
+        });
 
-    if (typeof settings.onLeave === 'function') {
-      settings.onLeave(current);
-
-    }
-
-    var webkit = '-webkit-transform: translate3d(0, ' + index * -100 + '%, 0); -webkit-transition: -webkit-transform ' + settings.animationDuration + 'ms ' + settings.animationTiming + ';';
-    var ms = ' -ms-transform: translate3d(0, ' + index * -100 + '%, 0); -ms-transition: -ms-transform ' + settings.animationDuration + 'ms ' + settings.animationTiming + ';';
-    var moz = '-moz-transform: translate3d(0, ' + index * -100 + '%, 0); -moz-transition: -moz-transform ' + settings.animationDuration + 'ms ' + settings.animationTiming + ';';
-    var normal = 'transform: translate3d(0, ' + index * -100 + '%, 0); transition: transform ' + settings.animationTime + 'ms ' + settings.easing + ';';
-
-    el.style.cssText = normal + webkit + ms + moz;
-
-    el.addEventListener('transitionend', function() {
-
-      if (typeof settings.afterMove === 'function') {
-        settings.afterMove(current);
-
-      }
-      
-    });
-
-    current = index;
-
-    // addClass active
-    setActive(index);
-
-  };
-
-  var transitionEnd = function() {
-
-  };
-
-  /**
-   * scrollUp
-   *
-   * @description move section to up
-   */
-  var scrollUp = function() {
-    if (current > 0) {
-      move(current - 1);
-
-    }
-
-  };
-
-  /**
-   * scrollDown
-   *
-   * @description move section to down
-   */
-  var scrollDown = function() {
-    if (current < total - 1) {
-      move(current + 1);
-
-    } else if (settings.infinite === true) { //move to first section
-      if (current < total) {
-        move(0);
-
-      }
-
-    }
-
-  };
-
-  /**
-   * scrollDelta
-   *
-   * @description get Delta position and move Up and Down based on scroll
-   * @param {DOMEvent} event
-   */
-  var scrollDelta = function(event) {
-
-    var delta = event.wheelDelta || -event.detail;
-    // http://stackoverflow.com/a/17514856
-    var time = new Date().getTime();
-
-    if (time - lastAnimation < settings.animationDuration) {
-      return;
-
-    }
-
-    if (delta > 0) {
-      scrollUp();
-
-    } else {
-      scrollDown();
-
-    }
-
-    lastAnimation = time;
-
-  };
-
-  /**
-   * keyboard
-   *
-   * @description move section on press keys(down, up)
-   * @param {{DOMEvent}} e
-   */
-  var keyboard = function(e) {
-    var keyCode = e.keyCode;
-
-    // http://stackoverflow.com/a/17514856
-    var time = new Date().getTime();
-    if (time - lastPress < settings.animationDuration) {
-      return;
-    }
-
-    switch (keyCode) {
-      case 38:
-        scrollUp();
-        break;
-
-      case 40:
-        scrollDown();
-        break;
-
-    }
-
-    lastPress = time;
-
-  };
-
-  /**
-   * pagination
-   *
-   * @description build pagination dots
-   */
-  var pagination = function() {
-    for (var i = 0; i < total; i++) {
-      paginationList += '<li><a data-index=\"' + i + '\" href=\"#' + i + '"\></a></li>';
-
-    }
-
-    var pagination = document.createElement('ul');
-    pagination.setAttribute('class', 'slide-navigation');
-    pagination.innerHTML = paginationList;
-
-    body.appendChild(pagination);
-
-  };
-
-  /**
-   * paginationBind
-   *
-   * @description Move slide when clicked in dot
-   * @param {{DOMEvent}} e
-   */
-  var paginationBind = function(e) {
-    e.preventDefault();
-
-    var index = this.dataset.index;
-    move(parseInt(index));
-
-  };
-  /**
-   * moveTo
-   *
-   * @description move slide to index pass on param in function
-   * @param  {{Number}} index slide index
-   */
-  SimpleFs.prototype.moveTo = function(index) {
-    move(index);
-
-  };
-
-  /**
-   * bindEvents
-   *
-   * @description initialize events
-   */
-  var bindEvents = function() {
-    if (settings.keyboard === true) {
-      document.addEventListener('keydown', keyboard);
-      document.addEventListener('keyup', keyboard);
-
-    }
-
-    // Reference line: 50
-    // add and remove class 'is-active'
-    if (settings.pagination === true) {
-      var paginationLinks = document.querySelectorAll('.slide-navigation li a');
-
-      for (var i = 0; i < paginationLinks.length; i++) {
-        paginationLinks[i].addEventListener('click', paginationBind);
-
-      }
-
-    }
-
-    if (typeof settings.afterMove === 'function') {
-
-    }
-
-    document.addEventListener('mousewheel', scrollDelta);
-    document.addEventListener('DOMMouseScroll', scrollDelta);
-
-  };
-
-  /**
-   * init
-   *
-   * @description init plugin
-   */
-  var init = function() {
-    if (settings.pagination === true) {
-      pagination();
-
-    }
-
-    bindEvents();
-    setActive();
-
-  };
-
-  init();
-
-};
-
-/**
- * @author John Resig to replicate extend functionality
- */
-Object.extend = function(orig) {
-  'use strict';
-  if (orig === null) {
-    return orig;
-
-  }
-
-  for (var i = 1; i < arguments.length; i++) {
-    var obj = arguments[i];
-    if (obj !== null) {
-      for (var prop in obj) {
-        var getter = obj.__lookupGetter__(prop),
-          setter = obj.__lookupSetter__(prop);
-
-        if (getter || setter) {
-          if (getter)
-            orig.__defineGetter__(prop, getter);
-
-          if (setter)
-            orig.__defineSetter__(prop, setter);
-
-        } else {
-          orig[prop] = obj[prop];
-
-        }
-
-      }
+      })(i);
 
     }
 
   }
 
-  return orig;
+  if (this.settings.keyboard) {
+    document.addEventListener('keydown', this.keyboard.bind(this));
+
+  }
+
+  if (this.settings.touch) {
+    this.enableTouch(document);
+
+  }
+
+  document.addEventListener('mousewheel', this.mousewheel.bind(this));
+  document.addEventListener('DOMMouseScroll', this.mousewheel.bind(this));
 
 };
+
+FullPage.prototype.makeActive = function(index) {
+  var self = this;
+  var paginationLinks = document.querySelectorAll('.slide-navigation li a');
+
+  for (var i = 0; i < this.sections.length; i++) {
+    this.sections[i].classList.remove('is-active');
+    paginationLinks[i].classList.remove('is-active');
+
+  }
+
+  this.sections[index].classList.add('is-active');
+  paginationLinks[index].classList.add('is-active');
+
+};
+
+FullPage.prototype.move = function(index) {
+
+  var self = this;
+
+  if (typeof self.settings.onLeave === 'function') {
+    self.settings.onLeave(this.index);
+
+  }
+
+  utils.setVendor(this.el, 'Transform', 'translate3d(0, ' + index * -100 + '%, 0)');
+  utils.setVendor(this.el, 'Transition', 'transform ' + this.settings.animationDuration + 'ms');
+
+  var checkEnd = function() {
+    if (typeof self.settings.afterLoad === 'function') {
+      self.settings.afterLoad(self.index);
+
+    }
+
+  };
+
+  this.el.addEventListener('transitionend', checkEnd);
+
+  this.index = index;
+
+  this.makeActive(index);
+
+};
+
+FullPage.prototype.moveUp = function() {
+  if (this.index > 0) {
+    this.move(this.index - 1);
+
+  }
+
+};
+
+FullPage.prototype.moveDown = function() {
+  if ((this.index + 1) < this.sections.length) {
+    this.move(this.index + 1);
+
+  }
+
+};
+
+FullPage.prototype.moveTo = function(index) {
+  this.move(index);
+
+};
+
+FullPage.prototype.enableTouch = function(el) {
+  var self = this;
+  var startCoords = 0;
+  var endCoords = 0;
+  var distance = 0;
+
+  el.addEventListener('touchstart', function(event) {
+    startCoords = event.changedTouches[0].pageY;
+    event.preventDefault();
+
+  });
+
+  el.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+
+  });
+
+  el.addEventListener('touchend', function(event) {
+    var time = new Date().getTime();
+
+    endCoords = event.changedTouches[0].pageY;
+    distance = endCoords - startCoords;
+
+    if (time - Math.abs(self.lastAnimation) < self.settings.animationDuration) {
+      return;
+
+    }
+
+    if ((distance < 0) && (Math.abs(distance) > self.settings.touchLimit)) {
+      self.moveDown();
+
+    } else if ((distance > 0) && (Math.abs(distance) > self.settings.touchLimit)) {
+      self.moveUp();
+
+    }
+
+    self.lastAnimation = time;
+
+  });
+
+};
+
+FullPage.prototype.mousewheel = function() {
+  var time = new Date().getTime();
+
+  if (time - Math.abs(this.lastAnimation) < this.settings.animationDuration) {
+    return;
+
+  }
+
+  if (event.deltaY > 0) {
+    this.moveDown();
+
+  } else {
+    this.moveUp();
+
+  }
+
+  this.lastAnimation = time;
+
+};
+
+FullPage.prototype.keyboard = function(event) {
+
+  var time = new Date().getTime();
+
+  if (time - Math.abs(this.lastAnimation) < this.settings.animationDuration) {
+    return;
+
+  }
+
+  if (event.keyCode === 38) {
+    this.moveUp();
+
+  }
+
+  if (event.keyCode === 40) {
+    this.moveDown();
+
+  }
+
+  this.lastAnimation = time;
+
+};
+
+FullPage.prototype.paginationHTML = function() {
+  var paginationList = '';
+
+  for (var i = 0; i < this.sections.length; i++) {
+    paginationList += '<li><a data-index=\"' + i + '\" href=\"#' + i + '"\></a></li>';
+
+  }
+
+  var pagination = document.createElement('ul');
+  pagination.setAttribute('class', 'slide-navigation');
+  pagination.innerHTML = paginationList;
+
+  this.body.appendChild(pagination);
+
+};
+

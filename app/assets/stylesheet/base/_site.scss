@@ -16,12 +16,18 @@ body {
   line-height: 1;
 
   font-size: 16px;
+  font-family: Arial, Helvetica;
   font-smoothing: antialiased;
 
   text-rendering: optimizeLegibility;
   text-size-adjust: none;
 
   overflow: hidden;
+
+}
+
+body.no-touch {
+  overflow: visible;
 
 }
 

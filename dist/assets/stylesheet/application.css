@@ -15,12 +15,16 @@ html {
 body {
   line-height: 1;
   font-size: 16px;
+  font-family: Arial, Helvetica;
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   -webkit-text-size-adjust: none;
       -ms-text-size-adjust: none;
           text-size-adjust: none;
   overflow: hidden; }
+
+body.no-touch {
+  overflow: visible; }
 
 h1,
 h2,
@@ -49,7 +53,16 @@ img {
   height: 100%;
   padding: 16px;
   box-sizing: border-box;
-  overflow: hidden; }
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center; }
   .section:nth-child(1) {
     background: #F8AB37; }
   .section:nth-child(2) {
@@ -82,5 +95,17 @@ img {
   transition: all 0.4s ease; }
   .slide-navigation a.is-active {
     background: #FFF; }
+
+#callback {
+  position: absolute;
+  top: 50%;
+  left: 32px;
+  color: #FFF;
+  font-size: 15px; }
+
+.link {
+  color: #FFF;
+  font-size: 20px;
+  font-weight: bold; }
 
 /*# sourceMappingURL=maps/application.css.map */
