@@ -196,7 +196,6 @@ FullPage.prototype.enableTouch = function(el) {
 
   el.addEventListener('touchstart', function(event) {
     startCoords = event.changedTouches[0].pageY;
-    event.preventDefault();
 
   });
 
