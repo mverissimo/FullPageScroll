@@ -8,7 +8,7 @@
  *
  * ========================================================== */
 
-;(function() {
+(function() {
   var defaults = {
     section: '.section',
 
@@ -75,6 +75,11 @@
     this.build();
     this.bindEvents();
     this.makeActive(this.index);
+
+    if (typeof this.settings.afterLoad === 'function') {
+      this.settings.afterLoad(this.index);
+    }
+
 
   };
 
