@@ -9,33 +9,39 @@
  * ========================================================== */
 
 (function() {
-  var defaults = {
-    section: '.section',
+  'use strict';
 
-    animationDuration: 700,
-    animationTiming: 'ease',
-    animationTranform: 'transform',
-
-    pagination: true,
-    keyboard: true,
-
-    touch: true,
-    touchLimit: 100,
-
-    loop: false,
-
-    onLeave: null,
-    afterLoad: null,
-
-  };
-
+  // Utilities helpers
   var utils = {
-    setVendor: function(el, property, value) {
-
-      if (!el) {
-        return;
+    // From http://stackoverflow.com/questions/11197247/javascript-equivalent-of-jquerys-extend-method
+    extend: function(defaults, options) {
+      if (typeof(options) !== 'object') {
+        options = {};
       }
 
+      for (var key in options) {
+        if (defaults.hasOwnProperty(key)) {
+          defaults[key] = options[key];
+        }
+
+      }
+
+      return defaults;
+
+    },
+
+    // From http://stackoverflow.com/questions/10964966/detect-ie-version-prior-to-v9-in-javascript
+    isIE: function() {
+      var myNav = navigator.userAgent.toLowerCase();
+      return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+    },
+
+    setStyle: function(el, property, value) {
+      el.style[property.charAt(0).toLowerCase() + property.slice(1)] = value;
+
+    },
+
+    setVendor: function(el, property, value) {
       el.style[property.charAt(0).toLowerCase() + property.slice(1)] = value;
       el.style['webkit' + property] = value;
       el.style['moz' + property] = value;
@@ -44,16 +50,63 @@
 
     },
 
+    // From http://jaketrent.com/post/addremove-classes-raw-javascript/
+    hasClass: function(el, className) {
+      if (el.classList) {
+        return el.classList.contains(className);
+      } else {
+        return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+      }
+
+    },
+
+    addClass: function(el, className) {
+      if (el.classList) {
+        el.classList.add(className);
+      } else if (!utils.hasClass(el, className)) {
+        el.className += " " + className;
+      }
+    },
+
+    removeClass: function(el, className) {
+      if (el.classList)
+        el.classList.remove(className)
+      else if (utils.hasClass(el, className)) {
+        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+        el.className = el.className.replace(reg, ' ');
+      }
+
+    },
+
   };
 
-  var FullPage = function(element, options) {
-    'use strict';
+  function FullPage(element, options) {
+
+    var defaults = {
+      section: '.section',
+
+      animationDuration: 700,
+      animationTiming: 'ease',
+      animationTranform: 'transform',
+
+      pagination: true,
+      keyboard: true,
+
+      touch: true,
+      touchLimit: 100,
+
+      loop: false,
+
+      onLeave: null,
+      afterLoad: null,
+
+    };
 
     // Element
     this.el = document.querySelector(element);
 
     // Settings
-    this.settings = Object.assign({}, defaults, options);
+    this.settings = utils.extend(defaults, options);
 
     // Body
     this.body = document.querySelector('body');
@@ -135,13 +188,13 @@
     var paginationLinks = document.querySelectorAll('.slide-navigation li a');
 
     for (var i = 0; i < this.sections.length; i++) {
-      this.sections[i].classList.remove('is-active');
-      paginationLinks[i].classList.remove('is-active');
+      utils.removeClass(this.sections[i], 'is-active');
+      utils.removeClass(paginationLinks[i], 'is-active');
 
     }
 
-    this.sections[index].classList.add('is-active');
-    paginationLinks[index].classList.add('is-active');
+    utils.addClass(this.sections[index], 'is-active');
+    utils.addClass(paginationLinks[index], 'is-active');
 
   };
 
@@ -151,6 +204,14 @@
 
     if (typeof self.settings.onLeave === 'function') {
       self.settings.onLeave(this.index);
+
+    }
+
+    if (utils.isIE() === 9) {
+      utils.setStyle(this.el, 'position', 'relative');
+      utils.setStyle(this.el, 'top', index * -100 + '%');
+      // utils.setVendor(this.el, 'Transform', 'translate3d(0, ' + index * -100 + '%, 0)');
+      utils.setVendor(this.el, 'Transition', 'transform ' + this.settings.animationDuration + 'ms');
 
     }
 

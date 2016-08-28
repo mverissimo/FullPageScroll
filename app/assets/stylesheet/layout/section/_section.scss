@@ -1,4 +1,5 @@
 #main {
+  width: 100%;
   height: 100%;
   // transition: transform .8s ease;
 
@@ -15,29 +16,21 @@
   box-sizing: border-box;
   overflow: hidden;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: table;
 
-  &:nth-child(1) {
-    background: $brand-primary;
+  &:nth-child(1) { background: $brand-primary; }
+  &:nth-child(2) { background: $brand-warning; }
+  &:nth-child(3) { background: $brand-info; }
+  &:nth-child(4) { background: $brand-success; }
 
-  }
+}
 
-  &:nth-child(2) {
-    background: $brand-warning;
+.container {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 
-  }
-
-  &:nth-child(3) {
-    background: $brand-info;
-
-  }
-
-  &:nth-child(4) {
-    background: $brand-success;
-
-  }
+  & a { color: #FFF; }
 
 }
 

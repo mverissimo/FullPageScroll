@@ -45,6 +45,7 @@ img {
   max-width: 100%; }
 
 #main {
+  width: 100%;
   height: 100%; }
 
 .section {
@@ -54,15 +55,7 @@ img {
   padding: 16px;
   box-sizing: border-box;
   overflow: hidden;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center; }
+  display: table; }
   .section:nth-child(1) {
     background: #F8AB37; }
   .section:nth-child(2) {
@@ -71,6 +64,13 @@ img {
     background: #379FF8; }
   .section:nth-child(4) {
     background: #37F87B; }
+
+.container {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center; }
+  .container a {
+    color: #FFF; }
 
 .slide-navigation {
   position: fixed;
